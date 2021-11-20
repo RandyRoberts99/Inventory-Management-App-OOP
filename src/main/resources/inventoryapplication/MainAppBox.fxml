@@ -37,7 +37,7 @@
             <TableView fx:id="inventoryViewer" layoutX="246.0" prefHeight="479.0" prefWidth="930.0">
               <columns>
                 <TableColumn fx:id="nameColumn" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" resizable="false" text="Name" />
-                <TableColumn fx:id="priceColumn" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" text="Price" />
+                <TableColumn fx:id="priceColumn" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" text="Price (In $USD)" />
                   <TableColumn fx:id="serialNumberColumn" maxWidth="230.0" minWidth="230.0" prefWidth="230.0" resizable="false" text="Serial Number" />
               </columns>
             </TableView>
@@ -50,7 +50,7 @@
             <Button fx:id="addButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#addEmptyItem" prefHeight="25.0" prefWidth="215.0" text="Add" />
             <Button fx:id="confirmButton" layoutX="1060.0" layoutY="558.0" mnemonicParsing="false" onAction="#confirmItem" prefHeight="25.0" prefWidth="76.0" text="Confirm" />
             <Text layoutX="40.0" layoutY="643.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inventory Item Name: (Max 256 characters)" wrappingWidth="241.13671875" />
-            <Text layoutX="40.0" layoutY="595.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inventory Item Price: (Cannot be $0)" wrappingWidth="249.13671875" />
+            <Text layoutX="40.0" layoutY="596.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inventory Item Price: (Cannot be less than or equal to $0.)" wrappingWidth="314.13671875" />
             <TextField fx:id="priceField" layoutX="40.0" layoutY="599.0" prefHeight="25.0" prefWidth="1096.0" />
             <Text layoutX="40.0" layoutY="541.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number: (Must be in the format A-XXX-XXX-XXX, A being a letter and X being numbers)" wrappingWidth="510.13671875" />
             <TextField fx:id="letterField" layoutX="40.0" layoutY="545.0" prefHeight="25.0" prefWidth="24.0" />

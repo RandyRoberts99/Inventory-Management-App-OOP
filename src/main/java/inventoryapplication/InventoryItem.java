@@ -1,30 +1,20 @@
 package inventoryapplication;
 
+import java.text.DecimalFormat;
+
 public class InventoryItem
 {
+    private DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
     private String itemName, serialNumber;
     private double itemPrice;
 
     public InventoryItem(String itemName, double itemPrice, String serialNumber)
     {
         this.itemName = itemName;
-        this.itemPrice = itemPrice;
+        this.itemPrice = Double.parseDouble(decimalFormat.format(itemPrice));
         this.serialNumber = serialNumber;
     }
-
-    public void setItemName(String itemName)
-    {
-        this.itemName = itemName;
-    }
-    public void setSerialNumber(String serialNumber)
-    {
-        this.serialNumber = serialNumber;
-    }
-    public void setItemPrice(double itemPrice)
-    {
-        this.itemPrice = itemPrice;
-    }
-
     public String getItemName()
     {
         return itemName;
