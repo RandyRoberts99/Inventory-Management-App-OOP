@@ -1,8 +1,14 @@
+/*
+ *  UCF COP3330 Fall 2021 Application Assignment 2 Solution
+ *  Copyright 2021 Randall Roberts
+ */
+
 package inventoryapplication;
 
 import java.io.File;
 import java.io.IOException;
 
+// responsible for changing objects to the appropriate files, using helper classes
 public class ListParser
 {
     TSVHandler tsvHandler = new TSVHandler();

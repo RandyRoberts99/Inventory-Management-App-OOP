@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class InventoryManagementApplication extends Application
 {
+    // Starts main stage/scene of the application
     @Override
     public void start(Stage stage) throws IOException
     {
