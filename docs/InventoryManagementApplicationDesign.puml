@@ -1,27 +1,119 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
+class InventoryManagementApplication
+{
+start()
+main()
+}
+class InventoryController
+{
+Button addButton
+Button clearButton
+Button deleteButton
+Button confirmButton
+Button closeButton
+Button editButton
 
-List <|-- AbstractList
-Collection <|-- AbstractCollection
+TextField letterField, firstNumberField, secondNumberField, thirdNumberField
+TextField priceField
+TextArea itemNameArea
 
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
+MenuItem saveButton
+MenuItem loadButton
+MenuItem newButton
+MenuItem closeAppButton
 
-class ArrayList {
-Object[] elementData
-size()
+ItemVerifier itemVerifier()
+ListParser listParser()
+ListLoader listLoader()
+
+initialize()
+addEmptyItem()
+attemptCloseApp()
+clearItems()
+confirmItem()
+createNewList()
+deleteItems()
+editItem()
+loadList()
+openGithubLink()
+saveList()
+searchItems()
+containsKey()
+checkDuplicateSerialNumber()
+}
+class InventoryItem
+{
+String itemName
+double itemPrice
+String serialNumber
+
+InventoryItem()
+
+getItemName()
+getItemPrice()
+getSerialNumber()
+
+setItemName()
+setItemPrice()
+setItemSerialNumber()
+}
+class ItemVerifier
+{
+validateName()
+validateSerialNumber()
+validateDollarAmount()
+validateLetterField()
+validateNumberField()
+}
+class ListParser
+{
+TSVHandler tsvHandler()
+JSONHandler jsonHandler()
+HTMLHandler htmlHandler()
+
+parseAndSaveFile()
+}
+class ListLoader
+{
+TSVHandler tsvHandler()
+JSONHandler jsonHandler()
+HTMLHandler htmlHandler()
+
+loadListFromFile()
+}
+class JSONHandler
+{
+ObjectMapper objectMapper()
+
+createJSONFile()
+createListFromJSON()
+}
+class HTMLHandler
+{
+createHTMLFile()
+createListFromHTML()
+}
+class TSVHandler
+{
+createTSVFile()
+createFileFromTSV()
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
-}
+InventoryManagementApplication <|-- InventoryController
+InventoryController <|-- InventoryItem
+InventoryController <|-- ItemVerifier
+InventoryController <|-- ListParser
+InventoryController <|-- ListLoader
+
+ListLoader <|-- JSONHandler
+ListParser <|-- JSONHandler
+
+ListLoader <|-- HTMLHandler
+ListParser <|-- HTMLHandler
+
+ListLoader <|-- TSVHandler
+ListParser <|-- TSVHandler
 
 @enduml

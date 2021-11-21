@@ -107,10 +107,11 @@ public class InventoryController {
     @FXML
     Alert filteredAlert;
 
-    @FXML Alert saveAlert;
+    @FXML Alert saveLoadAlert;
 
     private ItemVerifier itemVerifier;
     private ListParser listParser;
+    private ListLoader listLoader;
 
     private ObservableList<InventoryItem> inventoryList;
     private ObservableList<InventoryItem> filteredList;
@@ -123,15 +124,21 @@ public class InventoryController {
 
     private boolean isFiltered = false;
 
+    // This only exists because sonarlint wanted me to define a string for 3 uses of "Empty".
+    private String empty;
+
+    // create all alerts, helper classes, and instantiate objects
     @FXML
     void initialize()
     {
         itemVerifier = new ItemVerifier();
         listParser = new ListParser();
+        listLoader = new ListLoader();
+        empty = "Empty";
 
         inventoryList = FXCollections.observableArrayList();
         filteredList = FXCollections.observableArrayList();
-        emptyItem = new InventoryItem("Empty", -1,"Empty");
+        emptyItem = new InventoryItem(empty, -1,empty);
         numItems = 1;
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
@@ -172,11 +179,12 @@ public class InventoryController {
         filteredAlert.setContentText("Please de-select search mode to use other features.");
         filteredAlert.setResizable(false);
 
-        saveAlert = new Alert(Alert.AlertType.ERROR);
-        saveAlert.setTitle("Save Error");
-        saveAlert.setContentText("Please select a valid directory and file name.");
-        saveAlert.setResizable(false);
+        saveLoadAlert = new Alert(Alert.AlertType.ERROR);
+        saveLoadAlert.setTitle("Save Error");
+        saveLoadAlert.setContentText("Please select a valid directory and file name.");
+        saveLoadAlert.setResizable(false);
     }
+    // add in an item with default parameters
     @FXML
     void addEmptyItem(ActionEvent event)
     {
@@ -194,11 +202,13 @@ public class InventoryController {
         inventoryList.add(emptyItem);
         numItems++;
     }
+    // close the app
     @FXML
     void attemptCloseApp(ActionEvent event)
     {
         Platform.exit();
     }
+    // remove all items from
     @FXML
     void clearItems(ActionEvent event)
     {
@@ -211,6 +221,7 @@ public class InventoryController {
         editIndex = -1;
         numItems = 0;
     }
+    // check to make sure all inputs inside edit fields are valid, and if so edit the item at the edit index.
     @FXML
     void confirmItem(ActionEvent event)
     {
@@ -246,6 +257,7 @@ public class InventoryController {
             confirmAlert.showAndWait();
         }
     }
+    // delete all items from the list and add in an empty item
     @FXML
     void createNewList(ActionEvent event)
     {
@@ -260,6 +272,7 @@ public class InventoryController {
         editIndex = -1;
         numItems = 1;
     }
+    // delete the users selected item from the list
     @FXML
     void deleteItems(ActionEvent event)
     {
@@ -277,6 +290,7 @@ public class InventoryController {
         inventoryList.remove(deleteIndex);
         numItems--;
     }
+    // insert an items properties into the relative fields in the editor, and get the edit index
     @FXML
     void editItem(ActionEvent event)
     {
@@ -297,7 +311,7 @@ public class InventoryController {
             itemNameArea.setText(editItem.getItemName());
             priceField.setText(String.valueOf(editItem.getItemPrice()));
             String serialNumber = editItem.getSerialNumber();
-            if (serialNumber.equalsIgnoreCase("Empty"))
+            if (serialNumber.equalsIgnoreCase(empty))
             {
                 // default value
                 letterField.setText("A");
@@ -316,11 +330,47 @@ public class InventoryController {
             }
         }
     }
+    // load a list from a previously saved file on the users pc
     @FXML
-    void loadList(ActionEvent event)
-    {
+    void loadList(ActionEvent event) throws IOException {
 
+        FileChooser inventoryLoader = new FileChooser();
+        inventoryLoader.setInitialDirectory(new File(System.getProperty("user.dir")));
+
+        FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("TXT File", "*.txt");
+        FileChooser.ExtensionFilter htmlFilter = new FileChooser.ExtensionFilter("HTML File", "*.html");
+        FileChooser.ExtensionFilter jsonFilter = new FileChooser.ExtensionFilter("JSON File", "*.json");
+
+        inventoryLoader.getExtensionFilters().add(txtFilter);
+        inventoryLoader.getExtensionFilters().add(htmlFilter);
+        inventoryLoader.getExtensionFilters().add(jsonFilter);
+
+        Stage fileStage = new Stage();
+        File listLoadFile = inventoryLoader.showOpenDialog(fileStage);
+
+        if (listLoadFile != null)
+        {
+            List<InventoryItem> loadedList = listLoader.loadListFromFile(listLoadFile);
+
+            inventoryList.clear();
+            for (int i = 0; i < loadedList.size(); i++)
+            {
+                inventoryList.add(loadedList.get(i));
+            }
+            numItems = inventoryList.size();
+
+            // setting defaults encase it is needed
+            inventoryViewer.setItems(inventoryList);
+            filteredList.clear();
+            isFiltered = false;
+            searchButton.setText("Search");
+        }
+        else
+        {
+            saveLoadAlert.showAndWait();
+        }
     }
+    // open a link to the github which contains a guide to the app
     @FXML
     void openGithubLink() throws IOException
     {
@@ -334,6 +384,7 @@ public class InventoryController {
             e.printStackTrace();
         }
     }
+    // save the current inventory list to a file of the users choosing
     @FXML
     void saveList(ActionEvent event) throws IOException {
         FileChooser listSaver = new FileChooser();
@@ -359,7 +410,7 @@ public class InventoryController {
         }
         else
         {
-            saveAlert.showAndWait();
+            saveLoadAlert.showAndWait();
         }
     }
     // search the current list of items for items that match a keyword
@@ -417,6 +468,7 @@ public class InventoryController {
 
         return (itemSerialNumber.toLowerCase().contains(searchKey.toLowerCase()) || itemPriceStr.toLowerCase().contains(searchKey.toLowerCase()) || itemName.toLowerCase().contains(searchKey.toLowerCase()));
     }
+    // check all other serial numbers to see if any of them match the edited serial number
     private boolean checkDuplicateSerialNumber(String serialNumber)
     {
         for (int i = 0; i < numItems; i++)
